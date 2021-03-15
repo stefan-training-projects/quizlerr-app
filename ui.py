@@ -25,8 +25,8 @@ class QuizInterface:
         self.canvas.grid(row=1,column=0,columnspan=2,pady=20)
 
         #labels
-        self.score = Label(text="Score: 0",bg=THEME_COLOR,fg="white")
-        self.score.grid(row=0,column=1,pady=20)
+        self.score_label = Label(text="Score: 0",bg=THEME_COLOR,fg="white")
+        self.score_label.grid(row=0,column=1,pady=20)
 
         #buttons
         true_image =PhotoImage(file = "images/true.png")
@@ -41,13 +41,26 @@ class QuizInterface:
         self.window.mainloop()
 
     def get_next_question(self):
-        q_text = self.quiz.next_question()
-        self.canvas.itemconfig(self.question_text, text = q_text)
+        self.canvas.config(bg="white")
+        if self.quiz.still_has_questions():
+            self.score_label.config(text=f"Score: {self.quiz.score}")
+            q_text = self.quiz.next_question()
+            self.canvas.itemconfig(self.question_text, text = q_text)
+        else:
+            self.canvas.itemconfig(self.question_text, text ="Youve reached the end of the quiz")
+            self.button_true.config(state=DISABLED)
+            self.button_false.config(state=DISABLED)
 
     def true_pressed(self):
-        self.quiz.check_answer(True)
-        self.get_next_question()
+        self.give_feedback(self.quiz.check_answer("True"))
 
     def false_pressed(self):
-        self.quiz.check_answer(False)
-        self.get_next_question()
+        self.give_feedback(self.quiz.check_answer("False"))
+
+
+    def give_feedback(self, is_right):
+        if is_right:
+            self.canvas.config(bg="green")
+        else:
+            self.canvas.config(bg="red")
+        self.window.after(1000, self.get_next_question)
