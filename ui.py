@@ -1,5 +1,8 @@
 from tkinter import *
 from quiz_brain import QuizBrain
+import sys
+import os
+
 
 THEME_COLOR = "#375362"
 
@@ -35,6 +38,8 @@ class QuizInterface:
         self.button_true.grid(row=2,column=0,pady=20)
         self.button_false= Button(image=false_image,highlightthickness=0,bg=THEME_COLOR,command=self.false_pressed)
         self.button_false.grid(row=2,column=1,pady=20)
+        self.new_quiz_button = Button(text="New Quiz",bg="white",highlightthickness=0,command=self.new_quiz)
+        self.new_quiz_button.grid(row=0,column=0,pady=20)
 
         self.get_next_question()
 
@@ -47,7 +52,7 @@ class QuizInterface:
             q_text = self.quiz.next_question()
             self.canvas.itemconfig(self.question_text, text = q_text)
         else:
-            self.canvas.itemconfig(self.question_text, text ="Youve reached the end of the quiz")
+            self.canvas.itemconfig(self.question_text, text ="You've reached the end of the quiz")
             self.button_true.config(state=DISABLED)
             self.button_false.config(state=DISABLED)
 
@@ -64,3 +69,7 @@ class QuizInterface:
         else:
             self.canvas.config(bg="red")
         self.window.after(1000, self.get_next_question)
+
+    def new_quiz(self):
+        python = sys.executable
+        os.execl(python, python, * sys.argv)
